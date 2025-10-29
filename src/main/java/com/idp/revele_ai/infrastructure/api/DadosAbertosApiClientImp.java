@@ -1,10 +1,10 @@
-package com.idp.revele_ai.infrastructure.gateways;
+package com.idp.revele_ai.infrastructure.api;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.idp.revele_ai.domain.gatewayModels.BuscarDeputadoPorIdOutput;
-import com.idp.revele_ai.domain.gatewayModels.DeputadoOutput;
-import com.idp.revele_ai.domain.gateways.IDadosAbertosGateway;
+import com.idp.revele_ai.domain.models.BuscarDeputadoPorIdOutput;
+import com.idp.revele_ai.domain.models.DeputadoOutput;
+import com.idp.revele_ai.domain.api.IDadosAbertosApiClient;
 import kong.unirest.core.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,10 +12,10 @@ import org.springframework.stereotype.Component;
 
 
 @Component
-public class DadosAbertosGateway implements IDadosAbertosGateway {
+public class DadosAbertosApiClientImp implements IDadosAbertosApiClient {
 
     private static final String BASE_URL = "https://dadosabertos.camara.leg.br/api/v2";
-    private final Logger logger = LoggerFactory.getLogger(DadosAbertosGateway.class);
+    private final Logger logger = LoggerFactory.getLogger(DadosAbertosApiClientImp.class);
 
     @Override
     public DeputadoOutput listarDeputados(String nome, String[] siglaUf, String[] siglaPartido) throws Exception {

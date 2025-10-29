@@ -1,4 +1,4 @@
-package com.idp.revele_ai.domain.gatewayModels;
+package com.idp.revele_ai.domain.models;
 
 public class UltimoStatus{
     public int id;

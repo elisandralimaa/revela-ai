@@ -1,8 +1,8 @@
 package com.idp.revele_ai.resouce.controllers;
 
-import com.idp.revele_ai.domain.gatewayModels.BuscarDeputadoPorIdOutput;
-import com.idp.revele_ai.domain.gatewayModels.DeputadoOutput;
-import com.idp.revele_ai.domain.gateways.IDadosAbertosGateway;
+import com.idp.revele_ai.domain.models.BuscarDeputadoPorIdOutput;
+import com.idp.revele_ai.domain.models.DeputadoOutput;
+import com.idp.revele_ai.domain.api.IDadosAbertosApiClient;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "deputado", description = "rotas para operações relacionada a deputados")
 public class DeputadoController {
 
-    private IDadosAbertosGateway deputadoGateway;
+    private IDadosAbertosApiClient deputadoGateway;
 
-    public DeputadoController(IDadosAbertosGateway deputadoGateway){
+    public DeputadoController(IDadosAbertosApiClient deputadoGateway){
         this.deputadoGateway = deputadoGateway;
     }
 

@@ -7,10 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 // Essa anotação define a rota para o controller
 @RequestMapping(value = "/api/deputado")
@@ -29,9 +26,15 @@ public class DeputadoController {
     @GetMapping
     @Operation(description = "Esta rota serve para listar deputados")
     // essa anotação @Operation descreve melhor o que esse endpoint faz.
-    public ResponseEntity<DeputadoOutput> deputados(String nome, String[] siglaUF, String[] siglaPartido) throws Exception {
+    public ResponseEntity<DeputadoOutput> deputados(
+            String nome,
+            String[] siglaUF,
+            String[] siglaPartido,
+            @RequestParam(defaultValue = "1") Integer pagina,
+            @RequestParam(defaultValue = "24") Integer itens
+    ) throws Exception {
         return new ResponseEntity<>(
-                deputadoGateway.listarDeputados(nome, siglaUF, siglaPartido),
+                deputadoGateway.listarDeputados(nome, siglaUF, siglaPartido, pagina, itens),
                 HttpStatus.OK
         );
 

@@ -5,6 +5,13 @@ import com.idp.revele_ai.domain.models.DeputadoOutput;
 
 
 public interface IDadosAbertosApiClient {
-    DeputadoOutput listarDeputados(String nome, String[] siglaUF, String[] siglaPartido) throws Exception;
+    DeputadoOutput listarDeputados(
+            String nome,
+            String[] siglaUF,
+            String[] siglaPartido,
+            Integer pagina,
+            Integer itens
+    ) throws Exception;
+
     BuscarDeputadoPorIdOutput buscarDeputadosPorId(Integer id) throws Exception;
 }

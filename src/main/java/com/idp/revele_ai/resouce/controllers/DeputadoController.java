@@ -9,8 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-// Essa anotação resolve o bloqueio da política de CORS para esse endpoint
-@CrossOrigin(origins = "http://localhost:5173")
 // Essa anotação define a rota para o controller
 @RequestMapping(value = "/api/deputado")
 @RestController

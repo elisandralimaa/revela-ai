@@ -1,8 +1,8 @@
-package com.idp.revele_ai.resouce.controllers;
+package com.idp.revele_ai.resource.controllers;
 
-import com.idp.revele_ai.domain.models.BuscarDeputadoPorIdOutput;
-import com.idp.revele_ai.domain.models.DeputadoOutput;
-import com.idp.revele_ai.domain.api.IDadosAbertosApiClient;
+import com.idp.revele_ai.domain.models.DadosPorIdOutput;
+import com.idp.revele_ai.domain.models.DadosOutput;
+import com.idp.revele_ai.domain.service.IDeputadoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
@@ -19,19 +19,19 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "deputado", description = "rotas para operações relacionada a deputados")
 public class DeputadoController {
 
-    private IDadosAbertosApiClient deputadoGateway;
+    private final IDeputadoService deputadoService;
 
-    public DeputadoController(IDadosAbertosApiClient deputadoGateway){
-        this.deputadoGateway = deputadoGateway;
+    public DeputadoController(IDeputadoService deputadoService){
+        this.deputadoService = deputadoService;
     }
 
     //define o verbo HTTP do endpoint(caminho)
     @GetMapping
     @Operation(description = "Esta rota serve para listar deputados")
     // essa anotação @Operation descreve melhor o que esse endpoint faz.
-    public ResponseEntity<DeputadoOutput> deputados(String nome, String[] siglaUF, String[] siglaPartido) throws Exception {
+    public ResponseEntity<DadosOutput> deputados(String nome, String[] siglaUF, String[] siglaPartido) throws Exception {
         return new ResponseEntity<>(
-                deputadoGateway.listarDeputados(nome, siglaUF, siglaPartido),
+                deputadoService.listarDeputados(nome, siglaUF, siglaPartido),
                 HttpStatus.OK
         );
 
@@ -39,9 +39,9 @@ public class DeputadoController {
 
     @GetMapping("/{id}")
     @Operation(description = "Esta rota traz informações de deputadps por ID")
-    public ResponseEntity<BuscarDeputadoPorIdOutput> buscarDeputadoPorId(@PathVariable Integer id) throws Exception {
+    public ResponseEntity<DadosPorIdOutput> buscarDeputadoPorId(@PathVariable Integer id) throws Exception {
         return new ResponseEntity<>(
-                deputadoGateway.buscarDeputadosPorId(id),
+                deputadoService.buscarDeputadosPorId(id),
                 HttpStatus.OK
         );
     }

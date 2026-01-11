@@ -1,4 +1,4 @@
-package com.idp.revele_ai.resouce.config;
+package com.idp.revele_ai.resource.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;

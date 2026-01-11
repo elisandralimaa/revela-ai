@@ -2,8 +2,7 @@ package com.idp.revele_ai.infrastructure.api;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.idp.revele_ai.domain.models.BuscarDeputadoPorIdOutput;
-import com.idp.revele_ai.domain.models.DeputadoOutput;
+import com.idp.revele_ai.domain.models.*;
 import com.idp.revele_ai.domain.api.IDadosAbertosApiClient;
 import kong.unirest.core.*;
 import org.slf4j.Logger;
@@ -18,7 +17,7 @@ public class DadosAbertosApiClientImp implements IDadosAbertosApiClient {
     private final Logger logger = LoggerFactory.getLogger(DadosAbertosApiClientImp.class);
 
     @Override
-    public DeputadoOutput listarDeputados(String nome, String[] siglaUf, String[] siglaPartido) throws Exception {
+    public DadosOutput<DeputadoOutput> listarDeputados(String nome, String[] siglaUf, String[] siglaPartido) throws Exception {
         try {
             var request = Unirest.get(BASE_URL + "/deputados")
                     .header("Content-Type", "application/json")
@@ -39,11 +38,11 @@ public class DadosAbertosApiClientImp implements IDadosAbertosApiClient {
                 throw new Exception("Status http inválido ao solicitar.");
             }
 
-            // Desserializar (Tranformando o json em Objeto java)
+            // Deserializar (para manipular os dados em Java é preciso convertê‑la em objetos Java (deserializar))
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-            return mapper.readValue(response.getBody(), DeputadoOutput.class);
+            return mapper.readValue(response.getBody(), DadosOutput.class);
 
         } catch (UnirestException e) {
             // Se houver problemas de rede, DNS, etc. (erro do Unirest)
@@ -53,7 +52,7 @@ public class DadosAbertosApiClientImp implements IDadosAbertosApiClient {
     }
 
     @Override
-    public BuscarDeputadoPorIdOutput buscarDeputadosPorId(Integer id) throws Exception {
+    public DadosPorIdOutput<DeputadoDadoCompletoOutput> buscarDeputadosPorId(Integer id) throws Exception {
 
         try {
             GetRequest request = Unirest.get(BASE_URL + "/deputados/{id}")
@@ -71,7 +70,7 @@ public class DadosAbertosApiClientImp implements IDadosAbertosApiClient {
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
             // Retorna o objeto mapeado
-            return mapper.readValue(response.getBody(), BuscarDeputadoPorIdOutput.class);
+            return mapper.readValue(response.getBody(), DadosPorIdOutput.class);
 
         } catch (UnirestException e) {
 
@@ -82,5 +81,64 @@ public class DadosAbertosApiClientImp implements IDadosAbertosApiClient {
     }
 
 
+    @Override
+    public DadosOutput<PartidoOutput> listarPartidos(String [] siglaPartido) throws Exception{
+    try{
+        var request = Unirest.get(BASE_URL + "/partidos")
+                .header("Content-Type", "application/json");
+
+        if (siglaPartido != null && siglaPartido.length > 0){
+            request.queryString("siglaPartido",String.join(",", siglaPartido));
+
+        }
+
+        var response = request.asString();
+
+        if (response.getStatus() != HttpStatus.OK) {
+            logger.error("Status http inválido ao solicitar {}.", response.getBody());
+            throw new Exception("Status http inválido ao solicitar.");
+        }
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        return mapper.readValue(response.getBody(), new com.fasterxml.jackson.core.type.TypeReference<DadosOutput<PartidoOutput>>() {});
+
+
+    }catch (UnirestException e){
+        logger.atError().setMessage("[PartidoGateway] - Falha ao solicitar").setCause(e).log();
+        throw new Exception("Falha ao solicitar partidos.", e);
+
+    }
+
+    }
+
+    @Override
+    public DadosPorIdOutput<PartidoOutput> buscarPartidoPorId(Integer id) throws Exception {
+        try {
+            GetRequest request = Unirest.get(BASE_URL + "/partidos/{id}")
+                    .header("Content-Type", "application/json")
+                    .routeParam("id", String.valueOf(id)); //converte o Integer para String
+
+            //Executa a requisição e obtém a resposta (String JSON)
+            HttpResponse<String> response = request.asString();
+            if (response.getStatus() != HttpStatus.OK) {
+                logger.error("Status http inválido ao solicitar{}", response.getBody());
+                throw new Exception("Status http inválido ao solicitar");
+            }
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+            // Retorna o objeto mapeado
+            return mapper.readValue(response.getBody(), DadosPorIdOutput.class);
+
+        } catch (UnirestException e) {
+
+            logger.atError().setMessage("[DeputadoGateway] - Falha ao solicitar deputado por ID").setCause(e).log();
+            throw new Exception("Falha ao solicitar o deputado de iD" + id + ".", e);
+
+    }
+
+ }
 }
 

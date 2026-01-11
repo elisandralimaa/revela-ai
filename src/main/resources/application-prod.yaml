@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: revele-ai
+
+  # Configuração para ambiente de produção
+  profiles:
+    active: prod
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  packgesToScan: com.idp.revele_ai.resouce
+  pathsToMatch: /api/**
+  swagger-ui:
+    path: /swagger
+
+# Logging em produção
+logging:
+  level:
+    root: INFO
+    com.idp: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+
+# Server config
+server:
+  error:
+    include-message: always
+    include-stacktrace: never
+    include-binding-errors: always
+

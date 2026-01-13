@@ -17,11 +17,19 @@ public class DadosAbertosApiClientImp implements IDadosAbertosApiClient {
     private final Logger logger = LoggerFactory.getLogger(DadosAbertosApiClientImp.class);
 
     @Override
-    public DadosOutput<DeputadoOutput> listarDeputados(String nome, String[] siglaUf, String[] siglaPartido) throws Exception {
+    public DadosOutput<DeputadoOutput> listarDeputados(String nome, String[] siglaUf, String[] siglaPartido, Integer pagina, Integer itens) throws Exception {
         try {
             var request = Unirest.get(BASE_URL + "/deputados")
                     .header("Content-Type", "application/json")
                     .queryString("nome", nome);
+
+            if (pagina != null) {
+                request.queryString("pagina", pagina);
+            }
+
+            if (itens != null) {
+                request.queryString("itens", itens);
+            }
 
             if (siglaUf != null) {
                 request.queryString("siglaUf", String.join(",", siglaUf));

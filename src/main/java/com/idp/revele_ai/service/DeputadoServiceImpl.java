@@ -15,8 +15,8 @@ public class DeputadoServiceImpl implements IDeputadoService {
     }
 
     @Override
-    public DadosOutput<DeputadoOutput> listarDeputados(String nome, String[] siglaUF, String[] siglaPartido) throws Exception {
-        return dadosAbertosApi.listarDeputados(nome, siglaUF, siglaPartido);
+    public DadosOutput<DeputadoOutput> listarDeputados(String nome, String[] siglaUF, String[] siglaPartido, Integer pagina, Integer itens) throws Exception {
+        return dadosAbertosApi.listarDeputados(nome, siglaUF, siglaPartido, pagina, itens);
     }
 
     @Override

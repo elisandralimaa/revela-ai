@@ -2,6 +2,7 @@ package com.idp.revele_ai.resource.controllers;
 
 import com.idp.revele_ai.domain.models.DadosPorIdOutput;
 import com.idp.revele_ai.domain.models.DadosOutput;
+import com.idp.revele_ai.domain.models.DeputadoDetalhadoOutput;
 import com.idp.revele_ai.domain.service.IDeputadoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -41,5 +42,14 @@ public class DeputadoController {
                 deputadoService.buscarDeputadosPorId(id),
                 HttpStatus.OK
         );
+    }
+
+    @GetMapping("/{id}/detalhes-completos") // Uma rota nova e específica
+    @Operation(description = "Traz despesas, frentes, histórico, mandatos externos, ocupações e órgãos em uma única requisição")
+    public ResponseEntity<DeputadoDetalhadoOutput> buscarDetalhesCompletos(@PathVariable Integer id) throws Exception {
+
+        DeputadoDetalhadoOutput detalhes = deputadoService.buscarDetalhesCompletos(id);
+
+        return new ResponseEntity<>(detalhes, HttpStatus.OK);
     }
 }

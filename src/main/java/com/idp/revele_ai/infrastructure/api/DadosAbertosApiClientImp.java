@@ -1,6 +1,7 @@
 package com.idp.revele_ai.infrastructure.api;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.idp.revele_ai.domain.models.*;
 import com.idp.revele_ai.domain.api.IDadosAbertosApiClient;
@@ -148,5 +149,60 @@ public class DadosAbertosApiClientImp implements IDadosAbertosApiClient {
     }
 
  }
+
+    // Metodo generico utilziado por rotas diferentes
+    private <T> DadosOutput<T> buscarGenerico(String urlSuffix, Integer id, Class<T> tipoRetorno) throws Exception {
+        try {
+            String url = BASE_URL + "/deputados/" + id + urlSuffix;
+
+            var request = Unirest.get(url).header("Content-Type", "application/json");
+            var response = request.asString();
+
+            if (response.getStatus() != HttpStatus.OK) {
+                throw new Exception("Erro ao buscar " + urlSuffix);
+            }
+
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+            // Necessário por causa do Generics (DadosOutput<T>)
+            JavaType type = mapper.getTypeFactory().constructParametricType(DadosOutput.class, tipoRetorno);
+            return mapper.readValue(response.getBody(), type);
+
+        } catch (Exception e) {
+            logger.error("Erro na chamada genérica", e);
+            throw e;
+        }
+    }
+
+    @Override
+    public DadosOutput<DeputadoDespesasOutput> buscarDespesas(Integer id) throws Exception {
+        return buscarGenerico("/despesas", id, DeputadoDespesasOutput.class);
+    }
+
+    @Override
+    public DadosOutput<DeputadoFrentesOutput> buscarFrentes(Integer id) throws Exception {
+        return buscarGenerico("/frentes", id, DeputadoFrentesOutput.class);
+    }
+
+    @Override
+    public DadosOutput<DeputadoHistoricoOutput> buscarHistorico(Integer id) throws Exception {
+        return buscarGenerico("/historico", id, DeputadoHistoricoOutput.class);
+    }
+
+    @Override
+    public DadosOutput<DeputadoMandatosExternosOutput> buscarMandatosExternos(Integer id) throws Exception {
+        return buscarGenerico("/mandatosExternos", id, DeputadoMandatosExternosOutput.class);
+    }
+
+    @Override
+    public DadosOutput<DeputadoOcupacoesOutput> buscarOcupacoes(Integer id) throws Exception {
+        return buscarGenerico("/ocupacoes", id, DeputadoOcupacoesOutput.class);
+    }
+
+    @Override
+    public DadosOutput<DeputadoOrgaosOutput> buscarOrgaos(Integer id) throws Exception {
+        return buscarGenerico("/orgaos", id, DeputadoOrgaosOutput.class);
+    }
 }
 
